@@ -27,7 +27,7 @@ bool cancelled = false;
 bool generated = false;
 
 enum SortMethod {
-	Bubble, Insertion, Selection, Cocktail, Quick, Merge, Heap, Radix, Shell, Comb, Gnome
+	Bubble, Insertion, Selection, Cocktail, Quick, Merge, Heap, Radix, Shell, Comb, Gnome, Intro, Tim, Cube, Bogo, Count_
 };
 SortMethod sortMethod = Bubble;
 
@@ -94,7 +94,14 @@ Void MyForm::backgroundWorker1_DoWork( Object^ sender, DoWorkEventArgs^ e ) {
 		break;
 	case 10: GnomeSort( sender, e, v );
 		break;
-
+	case 11: IntroSort( sender, e, v, 0, v.size() - 1, 2 * log( v.size() ) );
+		break;
+	case 12: TimSort( sender, e, v );
+		break;
+	case 13: CubeSort( sender, e, v );
+		break;
+	case 14: BogoSort( sender, e, v );
+		break;
 	default: break;
 	}
 
@@ -109,18 +116,21 @@ Void Sort::MyForm::backgroundWorker1_ProgressChanged( Object^ sender, ProgressCh
 	if ( ptc < 0 || ptc >= v.size() ) return;
 	chart1->Series[0]->Points[ptc]->Color = Color::FromArgb( 209, 20, 83 );
 	
-	if ( sortMethod == 3 || sortMethod == 8 || sortMethod == 9 ) {
+	if ( sortMethod == Cocktail || sortMethod == Shell || sortMethod == Comb || sortMethod == Intro || sortMethod == Quick || sortMethod == Heap ||sortMethod == Bogo ) {
 		if ( !ptc || ptc2 < 0 || ptc2 >= v.size() ) return;
 		chart1->Series[0]->Points[ptc2]->Color = Color::FromArgb( 209, 20, 83 );
 	}
+	
 	
 	return Void();
 }
 Void Sort::MyForm::backgroundWorker1_RunWorkerCompleted( Object^ sender, RunWorkerCompletedEventArgs^ e )
 {
-	//8A2BE2
 
+	//8A2BE2
+	updateDataSet( dataSet1, v );
 	chart1->Series[0]->Points->DataBindY( dataSet1->Tables[0]->DefaultView, "Value" );
+	
 
 	return Void();
 }
@@ -158,12 +168,12 @@ Void Sort::MyForm::Sort_Click( Object^ sender, EventArgs^ e )
 		MessageBox::Show( "Please wait for the current operation to finish" );
 		return Void();
 	}
-
 	sleep = sleeptime( v.size() );
 
 	if ( cancelled ) MessageBox::Show( "Sorting will be performed from the beginning" );
 
 	backgroundWorker1->RunWorkerAsync();
+
 
 	return Void();
 }

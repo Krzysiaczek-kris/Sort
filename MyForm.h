@@ -8,7 +8,7 @@ extern int ptc;
 extern int ptc2;
 extern int sleep;
 extern bool cancelled;
-
+bool issorted( vector<int> v1 );
 
 namespace Sort {
 	
@@ -61,6 +61,9 @@ namespace Sort {
 	private: System::Windows::Forms::Button^ button_Save;
 	private: System::Windows::Forms::TextBox^ textBox_n;
 	private: System::Windows::Forms::Label^ label_n;
+
+
+
 
 
 
@@ -186,9 +189,10 @@ namespace Sort {
 			this->comboBox_sort->FormattingEnabled = true;
 			this->comboBox_sort->ImeMode = System::Windows::Forms::ImeMode::Disable;
 			this->comboBox_sort->ItemHeight = 20;
-			this->comboBox_sort->Items->AddRange( gcnew cli::array< System::Object^  >( 11 ) {
+			this->comboBox_sort->Items->AddRange( gcnew cli::array< System::Object^  >( 15 ) {
 				L"Bubble Sort", L"Insertion Sort", L"Selection Sort",
-					L"Cocktail Sort", L"Quick Sort", L"MergeSort", L"Heap Sort", L"Radix Sort", L"Shell Sort", L"Comb Sort", L"Gnome Sort"
+					L"Cocktail Sort", L"Quick Sort", L"MergeSort", L"Heap Sort", L"Radix Sort", L"Shell Sort", L"Comb Sort", L"Gnome Sort", L"Intro Sort",
+					L"Tim Sort", L"Cube Sort", L"Bogo Sort"
 			} );
 			this->comboBox_sort->Location = System::Drawing::Point( 526, 12 );
 			this->comboBox_sort->Name = L"comboBox_sort";
@@ -307,15 +311,14 @@ namespace Sort {
 	private: Void ShellSort( Object^ sender, EventArgs^ e, vector<int>& v );
 	private: Void CombSort( Object^ sender, EventArgs^ e, vector<int>& v );
 	private: Void GnomeSort( Object^ sender, EventArgs^ e, vector<int>& v );
+	private: Void IntroSort( Object^ sender, EventArgs^ e, vector<int>& v, int l, int r, int depth );
+	private: int Partition( Object^ sender, EventArgs^ e, vector<int>& v, int l, int r );
+	private: Void TimSort( Object^ sender, EventArgs^ e, vector<int>& v );
+	private: Void insSort( Object^ sender, EventArgs^ e, vector<int>& v, int l, int r );
+	private: Void CubeSort( Object^ sender, EventArgs^ e, vector<int>& v );
+	private: Void BogoSort( Object^ sender, EventArgs^ e, vector<int>& v );
 
-			
 		
-				
-			
-		
-
-
-
 
 };
 }

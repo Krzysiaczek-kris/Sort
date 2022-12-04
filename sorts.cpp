@@ -1,4 +1,5 @@
 #include "MyForm.h"
+#include<algorithm>
 
 using namespace std;
 using namespace Sort;
@@ -41,7 +42,6 @@ Void Sort::MyForm::BubbleSort( Object^ sender, EventArgs^ e, vector<int>& v )
 				swap( v[j], v[j + 1] );
 			}
 		}
-
 		ptc = j;
 		backgroundWorker1->ReportProgress( ( i + 1 ) * 100 / v.size() );
 		Threading::Thread::Sleep( sleep );
@@ -141,6 +141,7 @@ Void Sort::MyForm::QuickSort( Object^ sender, EventArgs^ e, vector<int>& v, int 
 			j--;
 		}
 		ptc = i;
+		ptc2 = j;
 		backgroundWorker1->ReportProgress( ( i + 1 ) * 100 / v.size() );
 		Threading::Thread::Sleep( sleep );
 	} while ( i <= j );
@@ -247,6 +248,7 @@ Void Sort::MyForm::Heapify( Object^ sender, EventArgs^ e, vector<int>& v, int n,
 		swap( v[i], v[largest] );
 		Heapify( sender, e, v, n, largest );
 	}
+	ptc2 = largest;
 	backgroundWorker1->ReportProgress( ( i + 1 ) * 100 / v.size() );
 	Threading::Thread::Sleep( sleep * 0.5 );
 	return Void();
@@ -370,5 +372,124 @@ Void Sort::MyForm::GnomeSort( Object^ sender, EventArgs^ e, vector<int>& v )
 		backgroundWorker1->ReportProgress( ( index + 1 ) * 100 / v.size() );
 		Threading::Thread::Sleep( sleep * 0.2 );
 	}
+	return Void();
+}
+
+int Sort::MyForm::Partition( Object^ sender, EventArgs^ e, vector<int>& v, int l, int r )
+{
+	int pivot = v[r];
+	int i = l - 1;
+	for ( int j = l; j <= r - 1; j++ )
+	{
+		if ( backgroundWorker1->CancellationPending ) return 0;
+		if ( v[j] <= pivot )
+		{
+			i++;
+			swap( v[i], v[j] );
+		}
+		ptc = j;
+		ptc2 = i;
+		backgroundWorker1->ReportProgress( ( j + 1 ) * 100 / v.size() );
+		Threading::Thread::Sleep( sleep * 0.2 );
+	}
+	swap( v[i + 1], v[r] );
+	return i + 1;
+}
+Void Sort::MyForm::IntroSort( Object^ sender, EventArgs^ e, vector<int>& v, int l, int r, int depth )
+{
+	if ( backgroundWorker1->CancellationPending ) return;
+	if ( l < r )
+	{
+		if ( depth == 0 )
+		{
+			HeapSort( sender, e, v );
+		}
+		else
+		{
+			int p = Partition( sender, e, v, l, r );
+			IntroSort( sender, e, v, l, p - 1, depth - 1 );
+			IntroSort( sender, e, v, p + 1, r, depth - 1 );
+		}
+	}
+	
+	return Void();
+}
+//ins sort used in timsort
+Void Sort::MyForm::insSort( Object^ sender, EventArgs^ e, vector<int>& v, int l, int r )
+{
+	for ( int i = l + 1; i <= r; i++ )
+	{
+		int temp = v[i];
+		int j = i - 1;
+		while ( j >= l && v[j] > temp )
+		{
+			if ( backgroundWorker1->CancellationPending ) return;
+			v[j + 1] = v[j];
+			j--;
+		}
+		v[j + 1] = temp;
+		ptc = i;
+		ptc2 = j;
+		backgroundWorker1->ReportProgress( ( i + 1 ) * 100 / v.size() );
+		Threading::Thread::Sleep( sleep * 0.2 );
+	}
+	return Void();
+}
+Void Sort::MyForm::TimSort( Object^ sender, EventArgs^ e, vector<int>& v )
+{
+	int n = v.size();
+	int minRun = 32;
+	for ( int i = 0; i < n; i += minRun )
+	{
+		insSort( sender, e, v, i, min( ( i + 31 ), ( n - 1 ) ) );
+	}
+	for ( int size = minRun; size < n; size = 2 * size )
+	{
+		for ( int left = 0; left < n; left += 2 * size )
+		{
+			int mid = left + size - 1;
+			int right = min( ( left + 2 * size - 1 ), ( n - 1 ) );
+			Merge( sender, e, v, left, mid, right );
+		}
+	}
+	
+	return Void();
+}
+Void Sort::MyForm::CubeSort( Object^ sender, EventArgs^ e, vector<int>& v )
+{
+	int n = v.size();
+	for ( int i = 0; i < n; i++ )
+	{
+		for ( int j = i + 1; j < n; j++ )
+		{
+			if ( backgroundWorker1->CancellationPending ) return;
+			if ( v[i] > v[j] )
+			{
+				swap( v[i], v[j] );
+			}
+			ptc = i;
+		}
+		backgroundWorker1->ReportProgress( ( i + 1 ) * 100 / v.size() );
+		Threading::Thread::Sleep( sleep * 0.5 );
+	}
+	return Void();
+}
+
+Void Sort::MyForm::BogoSort( Object^ sender, EventArgs^ e, vector<int>& v )
+{
+	int shuf = 0;
+	while ( !issorted( v ) )
+	{
+		if ( backgroundWorker1->CancellationPending ) return;
+		int j = rand() % v.size();
+		int k = rand() % v.size();
+		swap( v[j], v[k] );
+		ptc = j;
+		ptc2 = k;
+		backgroundWorker1->ReportProgress( ( j + 1 ) * 100 / v.size() );
+		Threading::Thread::Sleep( 1 );
+		shuf++;
+	}
+	MessageBox::Show( "Number of shuffles: " + shuf );
 	return Void();
 }
